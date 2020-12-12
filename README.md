@@ -7,6 +7,4 @@
 #### Usage
 
 ```md
-1. Cada branch corresponde a um projeto novo
-2. Sendo que os branches main e main-dev são para o projeto final caso exista
 ```
