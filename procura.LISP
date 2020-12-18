@@ -77,15 +77,19 @@
 ;;; Função que recebe um índice, uma peça e uma lista que representará uma linha do tabuleiro
 ;;;  e substitui pelo valor pretendido nessa posição.
 (defun substituir-posicao (index piece line)
-  (setf (nth index line) piece)
-  line)
+  (cond
+   ((null line) nil)
+   ((= index -1) (append (cons (car line) nil) (substituir-posicao index piece (cdr line))))
+   ((= index 0) (append (cons piece nil) (substituir-posicao (1- index) piece (cdr line))))
+   (t (append (cons (car line) nil) (substituir-posicao (1- index) piece (cdr line)))) ))
 
 ;;; Função que recebe dois índices (linha e coluna), uma peça e o tabuleiro.
 ;;; A função deverá retornar o tabuleiro com a célula substituída pelo valor pretendido. 
 (defun substituir (line col piece table)
-  (substituir-posicao col piece (nth line table))
-  table)
-
+  (cond ((null table) nil)
+        ((= line 0) (cons (substituir-posicao col piece (car table)) 
+                          (substituir (1- line) col piece (cdr table))))
+        (t (cons (car table) (substituir (1- line) col piece (cdr table))))))
 
 ;;Recebe uma lista de 4 pe�as e verifica se existe 4 propriedades iguais nas pe�as.
 (defun verifica-propriedades (lista-pecas)
@@ -99,8 +103,6 @@
      ((AND(equal (cadddr (first lista-pecas)) (cadddr (second lista-pecas))) (equal (cadddr (second lista-pecas)) (cadddr (third lista-pecas))) 
         (equal (cadddr (third lista-pecas)) (cadddr (fourth lista-pecas)))) T)
    (T NIL))
-   
- 
 )
 
 
@@ -113,32 +115,32 @@
 (defun operador (line col piece table)
   (cond
    ( (casa-vaziap line col (tabuleiro table))
-     (setf table (list 
-                  (substituir line col piece (tabuleiro table)) 
-                  (remover-peca piece (reserva table))
-                  ))table)
-     (
-   NIL))
-)
+     (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table) )))
+     (t nil)))
 
 
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
 
-(defun generate-descendants(state open)
-   (mapcar #'(lambda (piece) (run-operator state piece open 0 0 )) (reserva state))
-)
+(defun generate-descendants-bfs(state open)
+   (mapcar #'(lambda (piece) (append open (list state piece (run-operator state piece open 0 0 ) ))) (reserva state)))
 
-
-
-(defun run-operator (state piece open &optional (col 0) (line 0) )
+(defun run-operator (state piece open &optional (line 0) (col 0) )
   (cond 
    ((and (< col 4) (operador line col piece state) )
-    (append open (list (list line col))  (run-operator state piece open (+ col 1) line )))
-   ((< col 4) (run-operator state piece open (+ col 1) line ))
-   ((< line 3) (run-operator state piece open 0 (+ line 1)))
-   )
-)
- 
+    (append (list (list line col))
+            (run-operator state piece open line (+ col 1))))
+   ((< col 4) (run-operator state piece open line (+ col 1) ))
+   ((< line 3) (run-operator state piece open (+ line 1) 0))
+   (t open) ))
+
 ;;; BFS
-;;; 
+(defun bfs (state &optional (open '()) (closed '()) )
+  (cond ((null open) nil)
+        (t (let ((state (car open)))
+             (cond ((equal state *goal*) 'success)
+                   (t (setq *closed* (cons state *closed*))
+                      (setq *open* 
+                            (append (cdr *open*)
+                                    (generate-descendants state *moves*)))
+                      (bfs)))))))
  

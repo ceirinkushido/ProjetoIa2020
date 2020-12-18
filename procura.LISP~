@@ -3,7 +3,7 @@
 "Função que representa um tabuleiro de teste"
   '(
 		(
-			((branca redonda alta oca) 0 0  0) 
+			((branca redonda alta oca) 0 0 0) 
 			(0 (preta redonda alta oca) 0 0) 
 			(0 0 (branca redonda baixa oca) 0) 
 			(0 0 0 0)
@@ -105,15 +105,6 @@
 
 
 
-(defun verifica-condicao() 
-
-
-
-
-)
-
-
-
 
 ;;; =================================================OPERADORES=====================================
 
@@ -133,20 +124,19 @@
 
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
 
-(defun generate-descendants(state open closed)
-   (mapcar #'(run-operator state(reserva state)) )
-  
-
+(defun generate-descendants(state open)
+   (mapcar #'(lambda (piece) (run-operator state piece open 0 0 )) (reserva state))
 )
 
 
 
-(defun run-operator (state piece)
-   
-
-
-
-
+(defun run-operator (state piece open &optional (col 0) (line 0) )
+  (cond 
+   ((and (< col 4) (operador line col piece state) )
+    (append open (list (list line col))  (run-operator state piece open (+ col 1) line )))
+   ((< col 4) (run-operator state piece open (+ col 1) line ))
+   ((< line 3) (run-operator state piece open 0 (+ line 1)))
+   )
 )
  
 ;;; BFS
