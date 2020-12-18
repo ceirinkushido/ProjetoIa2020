@@ -1,6 +1,6 @@
 ;;; Tabuleiros
 (defun teste ()
-"Função que representa um tabuleiro de teste"
+"FunÃ§Ã£o que representa um tabuleiro de teste"
   '(
 		(
 			((branca redonda alta oca) 0 0 0) 
@@ -26,39 +26,39 @@
 	)
 )
 
-;;; Função que recebe uma lista que contém um tabuleiro com reservas de peça e devolve o tabuleiro
+;;; FunÃ§Ã£o que recebe uma lista que contÃ©m um tabuleiro com reservas de peÃ§a e devolve o tabuleiro
 (defun tabuleiro (table)
   (car table))
 
-;;; Função que recebe uma lista que contém um tabuleiro com reservas de peça e devolve a reserva de peças.
+;;; FunÃ§Ã£o que recebe uma lista que contÃ©m um tabuleiro com reservas de peÃ§a e devolve a reserva de peÃ§as.
 (defun reserva (table)
   (cadr table))
 
-;;; Função que recebe um índice e o tabuleiro e retorna uma lista que representa essa linha do tabuleiro.
+;;; FunÃ§Ã£o que recebe um Ã­ndice e o tabuleiro e retorna uma lista que representa essa linha do tabuleiro.
 (defun linha (index table)
   (nth index table))
 
-;;; Função que recebe um índice e o tabuleiro e retorna uma lista que representa essa coluna do tabuleiro
+;;; FunÃ§Ã£o que recebe um Ã­ndice e o tabuleiro e retorna uma lista que representa essa coluna do tabuleiro
 (defun coluna (index table)
   (mapcar #'(lambda (subtable) (nth index subtable)) table))
 
-;;; Função que recebe dois índices (linha e coluna) e o tabuleiro e retorna o valor presente nessa célula do tabuleiro.
+;;; FunÃ§Ã£o que recebe dois Ã­ndices (linha e coluna) e o tabuleiro e retorna o valor presente nessa cÃ©lula do tabuleiro.
 (defun celula (x y table)
   (nth y (nth x table)))
 
-;;; Função que recebe um tabuleiro e retorna uma lista que representa uma diagonal desse tabuleiro.
+;;; FunÃ§Ã£o que recebe um tabuleiro e retorna uma lista que representa uma diagonal desse tabuleiro.
 ;;; (diagonal-1 (tabuleiro (teste))) -> ((branca redonda alta oca) (preta redonda alta oca) (branca redonda baixa oca) 0)
 (defun diagonal-1(table)
   (if (null table) '()
   (cons (caar table) (diagonal-1 (mapcar #'cdr (cdr table))))))
 
-;;; Função que recebe um tabuleiro e retorna uma lista que representa uma diagonal desse tabuleiro.
+;;; FunÃ§Ã£o que recebe um tabuleiro e retorna uma lista que representa uma diagonal desse tabuleiro.
 ;;; (diagonal-2 (tabuleiro (teste))) -> (0 0 0 0)
 (defun diagonal-2(table)
   (diagonal-1 (reverse table)))
 
-;;; Função que recebe dois índices (linha e coluna) e o tabuleiro e devolve T se a casa estiver vazia e NIL caso contrário.
-;;; O valor de uma casa vazia no Problema do Quatro é o valor 0.
+;;; FunÃ§Ã£o que recebe dois Ã­ndices (linha e coluna) e o tabuleiro e devolve T se a casa estiver vazia e NIL caso contrÃ¡rio.
+;;; O valor de uma casa vazia no Problema do Quatro Ã© o valor 0.
 ;;; (casa-vaziap 0 1 (tabuleiro (teste))) -> T
 ;;; (casa-vaziap 0 0 (tabuleiro (teste))) -> NIL
 (defun casa-vaziap (line col table)
@@ -66,7 +66,7 @@
    ((atom (celula line col table)) T )
    (NIL)))
 
-;;; Função que recebe uma peça e uma lista com as peças de reserva e devolve uma nova lista sem essa peça de reserva
+;;; FunÃ§Ã£o que recebe uma peÃ§a e uma lista com as peÃ§as de reserva e devolve uma nova lista sem essa peÃ§a de reserva
 (defun remover-peca (piece reserved-pieces)
   (cond
    ((null reserved-pieces) NIL)
@@ -74,20 +74,23 @@
     (remover-peca piece (cdr reserved-pieces)))
    (T (cons (car reserved-pieces) (remover-peca piece (cdr reserved-pieces))))))
 
-;;; Função que recebe um índice, uma peça e uma lista que representará uma linha do tabuleiro
-;;;  e substitui pelo valor pretendido nessa posição.
+;;; FunÃ§Ã£o que recebe um Ã­ndice, uma peÃ§a e uma lista que representarÃ¡ uma linha do tabuleiro
+;;;  e substitui pelo valor pretendido nessa posiÃ§Ã£o.
 (defun substituir-posicao (index piece line)
-  (setf (nth index line) piece)
-  line)
+  (cond
+   ((null line) nil)
+   ((= index -1) (append (cons (car line) nil) (substituir-posicao index piece (cdr line))))
+   ((= index 0) (append (cons piece nil) (substituir-posicao (1- index) piece (cdr line))))
+   (t (append (cons (car line) nil) (substituir-posicao (- 1 index) piece (cdr line)))) ))
 
-;;; Função que recebe dois índices (linha e coluna), uma peça e o tabuleiro.
-;;; A função deverá retornar o tabuleiro com a célula substituída pelo valor pretendido. 
+;;; FunÃ§Ã£o que recebe dois Ã­ndices (linha e coluna), uma peÃ§a e o tabuleiro.
+;;; A funÃ§Ã£o deverÃ¡ retornar o tabuleiro com a cÃ©lula substituÃ­da pelo valor pretendido. 
 (defun substituir (line col piece table)
   (substituir-posicao col piece (nth line table))
   table)
 
 
-;;Recebe uma lista de 4 pe�as e verifica se existe 4 propriedades iguais nas pe�as.
+;;Recebe uma lista de 4 peças e verifica se existe 4 propriedades iguais nas peças.
 (defun verifica-propriedades (lista-pecas)
  (cond 
    ((AND(equal (car (first lista-pecas)) (car (second lista-pecas))) (equal (car (second lista-pecas)) (car (third lista-pecas))) 
@@ -108,24 +111,22 @@
 
 ;;; =================================================OPERADORES=====================================
 
-;;; Função que recebe dois índices (linha e coluna), uma lista que representará uma peça e
-;;;  o tabuleiro com reservas de peca e movimenta a peça para a célula correspondente, removendo-a da reserva de peças.
+;;; FunÃ§Ã£o que recebe dois Ã­ndices (linha e coluna), uma lista que representarÃ¡ uma peÃ§a e
+;;;  o tabuleiro com reservas de peca e movimenta a peÃ§a para a cÃ©lula correspondente, removendo-a da reserva de peÃ§as.
 (defun operador (line col piece table)
   (cond
    ( (casa-vaziap line col (tabuleiro table))
-     (setf table (list 
-                  (substituir line col piece (tabuleiro table)) 
-                  (remover-peca piece (reserva table))
-                  ))table)
-     (
-   NIL))
+     (list 
+      (substituir line col piece (tabuleiro table)) 
+      (remover-peca piece (reserva table))))
+     (NIL))
 )
 
 
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
 
 (defun generate-descendants(state open)
-   (mapcar #'(lambda (piece) (run-operator state piece open 0 0 )) (reserva state))
+   (mapcar #'(lambda (piece) (list  (run-operator state piece open 0 0 )) (reserva state))
 )
 
 
@@ -136,6 +137,7 @@
     (append open (list (list line col))  (run-operator state piece open (+ col 1) line )))
    ((< col 4) (run-operator state piece open (+ col 1) line ))
    ((< line 3) (run-operator state piece open 0 (+ line 1)))
+   (t open)
    )
 )
  
