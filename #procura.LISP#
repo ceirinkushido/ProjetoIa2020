@@ -125,8 +125,8 @@
 
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
 
-(defun generate-descendants(state open)
-   (mapcar #'(lambda (piece) (list  (run-operator state piece open 0 0 )) (reserva state))
+(defun generate-descendants-bfs(state open)
+   (mapcar #'(lambda (piece) (list piece (run-operator state piece open 0 0 ))) (reserva state))
 )
 
 
