@@ -3,10 +3,10 @@
 "Função que representa um tabuleiro de teste"
   '(
 		(
-			((branca redonda alta oca) 0 0 0) 
-			(0 (preta redonda alta oca) 0 0) 
-			(0 0 (branca redonda baixa oca) 0) 
-			(0 0 0 0)
+			(0 0 0 (branca redonda alta oca) ) 
+			(0 0 0 (preta redonda alta oca) )  
+			(0 0 0 (branca redonda baixa oca) ) 
+			(0 0 0 0) 
 		)
 		(
                         (preta redonda baixa oca)
@@ -36,11 +36,15 @@
 
 ;;; Função que recebe um índice e o tabuleiro e retorna uma lista que representa essa linha do tabuleiro.
 (defun linha (index table)
-  (nth index table))
+  (cond
+   ((= index 0) (car table))
+   (t (linha (1- index) (cdr table)))))
 
 ;;; Função que recebe um índice e o tabuleiro e retorna uma lista que representa essa coluna do tabuleiro
 (defun coluna (index table)
-  (mapcar #'(lambda (subtable) (nth index subtable)) table))
+  (cond
+   ((null table) nil)
+   (t (cons (linha index (car table)) (coluna index (cdr table)))) ))
 
 ;;; Função que recebe dois índices (linha e coluna) e o tabuleiro e retorna o valor presente nessa célula do tabuleiro.
 (defun celula (x y table)
@@ -91,19 +95,40 @@
                           (substituir (1- line) col piece (cdr table))))
         (t (cons (car table) (substituir (1- line) col piece (cdr table))))))
 
-;;Recebe uma lista de 4 pe�as e verifica se existe 4 propriedades iguais nas pe�as.
-(defun verifica-propriedades (lista-pecas)
- (cond 
-   ((AND(equal (car (first lista-pecas)) (car (second lista-pecas))) (equal (car (second lista-pecas)) (car (third lista-pecas))) 
-        (equal (car (third lista-pecas)) (car (fourth lista-pecas)))) T)
-   ((AND(equal (cadr (first lista-pecas)) (cadr (second lista-pecas))) (equal (cadr (second lista-pecas)) (cadr (third lista-pecas))) 
-        (equal (cadr (third lista-pecas)) (cadr (fourth lista-pecas)))) T)
-   ((AND(equal (caddr (first lista-pecas)) (caddr (second lista-pecas))) (equal (caddr (second lista-pecas)) (caddr (third lista-pecas))) 
-        (equal (caddr (third lista-pecas)) (caddr (fourth lista-pecas)))) T)
-     ((AND(equal (cadddr (first lista-pecas)) (cadddr (second lista-pecas))) (equal (cadddr (second lista-pecas)) (cadddr (third lista-pecas))) 
-        (equal (cadddr (third lista-pecas)) (cadddr (fourth lista-pecas)))) T)
-   (T NIL))
+;;Recebe um tabuleiro  e verifica se existe 4 propriedades iguais nas pe�as.
+(defun verifica-propriedades (lista-pecas &optional (index 0))
+
+    (cond 
+     ((and (< index 3) (comparar-linha-coluna(linha index lista-pecas)) (comparar-linha-coluna(coluna index lista-pecas)))
+     (verifica-propriedades lista-pecas (+ 1 index))) 
+     ((or (not(comparar-linha-coluna (linha index lista-pecas) )) (not(comparar-linha-coluna (coluna index lista-pecas)))
+          (not(comparar-linha-coluna (diagonal-1 lista-pecas)))  (not(comparar-linha-coluna (diagonal-2 lista-pecas))))  
+       T) 
+     (nil))
+  
+        
 )
+
+
+;; Todas as pe�as diferentes de 0 e qualquer combina��o das 4 propriedadades iguais 
+(defun comparar-linha-coluna (linha)
+
+  (cond ((and (not(equal 0 (car linha))) (not(equal 0 (cadr linha))) (not(equal 0 (caddr linha))) (not(equal 0 (cadddr linha))) 
+        (or (and (equal (car (first linha)) (car (second linha))) (equal (car (second linha)) (car (third linha))) 
+             (equal (car (third linha)) (car (fourth linha))) )  
+            (AND(equal (cadr (first linha)) (cadr (second linha))) (equal (cadr (second linha)) (cadr (third linha))) 
+             (equal (cadr (third linha)) (cadr (fourth linha))) ) 
+            (AND(equal (caddr (first linha)) (caddr (second linha))) (equal (caddr (second linha)) (caddr (third linha))) 
+             (equal (caddr (third linha)) (caddr (fourth linha))) ) 
+            (AND(equal (cadddr (first linha)) (cadddr (second linha))) (equal (cadddr (second linha)) (cadddr (third linha))) 
+             (equal (cadddr (third linha)) (cadddr (fourth linha))) )
+         ) ) nil)
+             (t) 
+    )
+        
+
+)
+
 
 
 
@@ -118,29 +143,33 @@
      (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table) )))
      (t nil)))
 
-
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
+(defun generate-descendants-bfs(table &optional (open '()) (depth 0))
+   (mapcar #'(lambda (piece) (run-operator table piece open 0 0 depth )) (reserva table)))
 
-(defun generate-descendants-bfs(state open)
-   (mapcar #'(lambda (piece) (append open (list state piece (run-operator state piece open 0 0 ) ))) (reserva state)))
-
-(defun run-operator (state piece open &optional (line 0) (col 0) )
+(defun run-operator (table piece open &optional (line 0) (col 0) (depth 0) )
   (cond 
-   ((and (< col 4) (operador line col piece state) )
-    (append (list (list line col))
-            (run-operator state piece open line (+ col 1))))
-   ((< col 4) (run-operator state piece open line (+ col 1) ))
-   ((< line 3) (run-operator state piece open (+ line 1) 0))
+   ((and (< col 4) (operador line col piece table) )
+    (append (list (list depth table piece (list line col)))
+            (run-operator table piece open line (+ col 1))))
+   ((< col 4) (run-operator table piece open line (+ col 1) ))
+   ((< line 3) (run-operator table piece open (+ line 1) 0))
    (t open) ))
 
+
+;;; Tirar o estado dos abertos e por nos fechados depois gerar os sucessores do estado atual e colocar nos abertos
 ;;; BFS
-(defun bfs (state &optional (open '()) (closed '()) )
-  (cond ((null open) nil)
-        (t (let ((state (car open)))
-             (cond ((equal state *goal*) 'success)
-                   (t (setq *closed* (cons state *closed*))
-                      (setq *open* 
-                            (append (cdr *open*)
-                                    (generate-descendants state *moves*)))
-                      (bfs)))))))
+(defun bfs (&optional (state nil)  (open '()) (closed '()) (no-inicial nil ) (max-depth 1000))
+  (cond ((null state) nil)
+  ((null no-inicial) (bfs 0 (generate-descendants-bfs state) nil (list 0 state)))
+  ((null open) nil )
+         ((null(car(car open))) 
+          (let ((state (car (cadr open))))
+             (cond ((or (verifica-propriedades (tabuleiro(cadr state)) )(equal(car state) max-depth)) state)
+                   (t (bfs state (list (cdr open) (generate-descendants-bfs state)) (list state closed) no-inicial max-depth )))
+          )
+         (t (let ((state (car (car open))))
+            (cond ((or (verifica-propriedades (tabuleiro(cadr state)) ) (equal(car state) max-depth))  state)
+                  (t 'falta-correr-bfs))))
+         ))
  

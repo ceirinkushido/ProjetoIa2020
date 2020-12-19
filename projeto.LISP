@@ -1,6 +1,6 @@
 ;;; This File Loads required files and handles user interaction
-(load "~/desktop/ProjetoIa2020/puzzle.lisp" ::if-does-not-exist nil)
-(load "~/desktop/ProjetoIa2020/procura.lisp" ::if-does-not-exist nil)
+(load "~/desktop/ProjetoIa2020/puzzle.lisp") ;;::if-does-not-exist nil)
+(load "~/desktop/ProjetoIa2020/procura.lisp") ;;::if-does-not-exist nil)
 
 (defun load-problem (number algorithm)
   (let 
@@ -16,7 +16,7 @@
 
 (defun run-algorithm(table algorithm)
   (cond
-   ((equal algorithm 'bfs) "bfs")
+   ((equal algorithm 'bfs) (bfs table))
    ((equal algorithm 'dfs) (table))
    ((equal algorithm 'a*) "a*")
    (t "Not the right algorithm")))
