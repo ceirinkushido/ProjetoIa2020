@@ -102,7 +102,7 @@
      ((and (< index 3) (comparar-linha-coluna(linha index lista-pecas)) (comparar-linha-coluna(coluna index lista-pecas)))
      (verifica-propriedades lista-pecas (+ 1 index))) 
      ((or (not(comparar-linha-coluna (linha index lista-pecas) )) (not(comparar-linha-coluna (coluna index lista-pecas)))
-          (not(comparar-linha-coluna (diagonal-1 lista-pecas)))  (not(comparar-linha-coluna (diagonal-2 lista-pecas))))  
+          (not(comparar-linha-coluna (diagonal-1 lista-pecas)))  (not(comparar-linha-coluna (diagonal-1 lista-pecas))))  
        T) 
      (nil))
   
@@ -120,7 +120,7 @@
              (equal (cadr (third linha)) (cadr (fourth linha))) ) 
             (AND(equal (caddr (first linha)) (caddr (second linha))) (equal (caddr (second linha)) (caddr (third linha))) 
              (equal (caddr (third linha)) (caddr (fourth linha))) ) 
-            (AND(equal (cadddr (first linha)) (cadddr (second linha))) (equal (cadddr (second linha)) (cadddr (third linha))) 
+            (AND(equal (cadddr (first linha)) (cadddr (second linha))) (equal (cadddr (second linha)) (cadddr (third linha)))
              (equal (cadddr (third linha)) (cadddr (fourth linha))) )
          ) ) nil)
              (t) 
@@ -140,36 +140,42 @@
 (defun operador (line col piece table)
   (cond
    ( (casa-vaziap line col (tabuleiro table))
-     (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table) )))
+     (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table)) ))
      (t nil)))
 
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
-(defun generate-descendants-bfs(table &optional (open '()) (depth 0))
-   (mapcar #'(lambda (piece) (run-operator table piece open 0 0 depth )) (reserva table)))
+(defun generate-descendants-bfs(state &optional (depth 0) )
+    (mapcar #'(lambda (piece) (run-operator state piece 0 0 depth )) (reserva state)))
 
-(defun run-operator (table piece open &optional (line 0) (col 0) (depth 0) )
+(defun run-operator (table piece &optional (line 0) (col 0) (depth 0) ) ;;Fix running
   (cond 
    ((and (< col 4) (operador line col piece table) )
-    (append (list (list depth table piece (list line col)))
-            (run-operator table piece open line (+ col 1))))
-   ((< col 4) (run-operator table piece open line (+ col 1) ))
-   ((< line 3) (run-operator table piece open (+ line 1) 0))
-   (t open) ))
+    (append (list (list depth (list piece line col))) ;;removed table
+            (run-operator table piece line (+ col 1) depth)))
+   ;;((< col 4) (run-operator table piece line (+ col 1) depth))
+   ((and (< col 3) (< line 3)) (run-operator table piece (+ line 1) 0 depth))
+   (t nil) ))
 
 
 ;;; Tirar o estado dos abertos e por nos fechados depois gerar os sucessores do estado atual e colocar nos abertos
 ;;; BFS
-(defun bfs (&optional (state nil)  (open '()) (closed '()) (no-inicial nil ) (max-depth 1000))
-  (cond ((null state) nil)
-  ((null no-inicial) (bfs 0 (generate-descendants-bfs state) nil (list 0 state)))
-  ((null open) nil )
-         ((null(car(car open))) 
-          (let ((state (car (cadr open))))
-             (cond ((or (verifica-propriedades (tabuleiro(cadr state)) )(equal(car state) max-depth)) state)
-                   (t (bfs state (list (cdr open) (generate-descendants-bfs state)) (list state closed) no-inicial max-depth )))
-          )
-         (t (let ((state (car (car open))))
-            (cond ((or (verifica-propriedades (tabuleiro(cadr state)) ) (equal(car state) max-depth))  state)
-                  (t 'falta-correr-bfs))))
-         ))
- 
+(defun bfs (&optional (open '()) (closed '()) (max-depth 2) (initial-table nil))
+  (cond ((null open) nil)
+        ((null initial-table) (bfs (abertos-bfs open 0) '() max-depth open))
+         (t (let ((state (car open)))
+           (cond 
+           ;; ((or (correr-jogadas initial-table moves) (>= (car state) max-depth)) state)
+            (t (append state (correr-jogadas (teste) state (+ 1 (car state))))  )))))) ;;(bfs (abertos-bfs (teste) (+ 1 (car state)) )
+                 ;;   (list state closed) max-depth initial-node)))) )))
+
+(defun abertos-bfs (state &optional (depth 0))
+  (apply #'append (generate-descendants-bfs state depth))
+)
+
+;;
+(defun correr-jogadas (initial-table moves depth) ;;replace depth with length of moves
+;;(operador (caddr (cadr moves))  (cadr (cadr moves)) (car(cadr moves)) initial-table)
+(abertos-bfs (operador (caddr (cadr moves)) (cadr (cadr moves)) (car(cadr moves)) initial-table) depth)
+;; depois de correr todos os movimentos na lista moves
+;; chamar (verifica-propriedades (tabuleiro(cadr state)))
+)
