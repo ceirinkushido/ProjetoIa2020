@@ -149,12 +149,12 @@
 
 (defun run-operator (table piece &optional (line 0) (col 0) (depth 0) )
   (cond 
-   ((and (< col 4) (operador line col piece table) )
-    (append (list (list depth table piece (list line col)))
-            (run-operator table piece open line (+ col 1))))
-   ((< col 4) (run-operator table piece open line (+ col 1) ))
-   ((< line 3) (run-operator table piece open (+ line 1) 0))
-   (t open) ))
+   ((and (< col 3) (operador line col piece table) )
+    (append (list (list depth (operador line col piece table) (list piece line col)))
+            (run-operator table piece line (+ col 1) depth)))
+   ((< col 3) (run-operator table piece line (+ col 1) depth))
+   ((< line 3) (run-operator table piece (+ line 1) depth))
+   (t nil) ))
 
 
 ;;; Tirar o estado dos abertos e por nos fechados depois gerar os sucessores do estado atual e colocar nos abertos
