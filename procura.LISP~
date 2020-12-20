@@ -1,30 +1,30 @@
 ;;; Tabuleiros
 (defun teste ()
-"Função que representa um tabuleiro de teste"
+  "Função que representa um tabuleiro de teste"
   '(
-		(
-			(0 0 0 (branca redonda alta oca) ) 
-			(0 0 0 (preta redonda alta oca) )  
-			(0 0 0 (branca redonda baixa oca) ) 
-			(0 0 0 0) 
-		)
-		(
-                        (preta redonda baixa oca)
-			(branca quadrada alta oca)
-			(preta quadrada alta oca)
-			(branca quadrada baixa oca)
-			(preta quadrada baixa oca)
-			(branca redonda alta cheia)
-			(preta redonda alta cheia)
-			(branca redonda baixa cheia)
-			(preta redonda baixa cheia)
-			(branca quadrada alta cheia)
-			(preta quadrada alta cheia)
-			(branca quadrada baixa cheia)
-			(preta quadrada baixa cheia)
-		)
-	)
-)
+    (
+     (0 0 0 (branca redonda alta oca) ) 
+     (0 0 0 (preta redonda alta oca) )  
+     (0 0 0 (branca redonda baixa oca) ) 
+     (0 0 0 0)
+     )
+    (
+     (preta redonda baixa oca)
+     (branca quadrada alta oca)
+     (preta quadrada alta oca)
+     (branca quadrada baixa oca)
+     (preta quadrada baixa oca)
+     (branca redonda alta cheia)
+     (preta redonda alta cheia)
+     (branca redonda baixa cheia)
+     (preta redonda baixa cheia)
+     (branca quadrada alta cheia)
+     (preta quadrada alta cheia)
+     (branca quadrada baixa cheia)
+     (preta quadrada baixa cheia)
+     )
+    )
+  )
 
 ;;; Função que recebe uma lista que contém um tabuleiro com reservas de peça e devolve o tabuleiro
 (defun tabuleiro (table)
@@ -87,7 +87,7 @@
    ((= index 0) (append (cons piece nil) (substituir-posicao (1- index) piece (cdr line))))
    (t (append (cons (car line) nil) (substituir-posicao (1- index) piece (cdr line)))) ))
 
-;;; Função que recebe dois índices (linha e coluna), uma peça e o tabuleiro.
+;;; Funcao que recebe dois indices (linha e coluna), uma peca e o tabuleiro.
 ;;; A função deverá retornar o tabuleiro com a célula substituída pelo valor pretendido. 
 (defun substituir (line col piece table)
   (cond ((null table) nil)
@@ -112,26 +112,16 @@
 
 ;; Todas as pe�as diferentes de 0 e qualquer combina��o das 4 propriedadades iguais 
 (defun comparar-linha-coluna (linha)
-
   (cond ((and (not(equal 0 (car linha))) (not(equal 0 (cadr linha))) (not(equal 0 (caddr linha))) (not(equal 0 (cadddr linha))) 
-        (or (and (equal (car (first linha)) (car (second linha))) (equal (car (second linha)) (car (third linha))) 
-             (equal (car (third linha)) (car (fourth linha))) )  
-            (AND(equal (cadr (first linha)) (cadr (second linha))) (equal (cadr (second linha)) (cadr (third linha))) 
-             (equal (cadr (third linha)) (cadr (fourth linha))) ) 
-            (AND(equal (caddr (first linha)) (caddr (second linha))) (equal (caddr (second linha)) (caddr (third linha))) 
-             (equal (caddr (third linha)) (caddr (fourth linha))) ) 
-            (AND(equal (cadddr (first linha)) (cadddr (second linha))) (equal (cadddr (second linha)) (cadddr (third linha)))
-             (equal (cadddr (third linha)) (cadddr (fourth linha))) )
-         ) ) nil)
-             (t) 
-    )
-        
-
-)
-
-
-
-
+              (or (and (equal (car (first linha)) (car (second linha))) (equal (car (second linha)) (car (third linha))) 
+                       (equal (car (third linha)) (car (fourth linha))) )  
+                  (AND(equal (cadr (first linha)) (cadr (second linha))) (equal (cadr (second linha)) (cadr (third linha))) 
+                      (equal (cadr (third linha)) (cadr (fourth linha))) ) 
+                  (AND(equal (caddr (first linha)) (caddr (second linha))) (equal (caddr (second linha)) (caddr (third linha))) 
+                      (equal (caddr (third linha)) (caddr (fourth linha))) ) 
+                  (AND(equal (cadddr (first linha)) (cadddr (second linha))) (equal (cadddr (second linha)) (cadddr (third linha)))
+                      (equal (cadddr (third linha)) (cadddr (fourth linha))) )) ) nil)
+        (t)))
 
 ;;; =================================================OPERADORES=====================================
 
@@ -143,31 +133,42 @@
      (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table)) ))
      (t nil)))
 
+;; node = (state, depth, heuristic, parent)
 ;; No(estado do no(tabuleiro , lista de reserva) movimento e a profundidade)
-(defun generate-descendants-bfs(state &optional (depth 0))
-    (mapcar #'(lambda (piece) (run-operator state piece 0 0 depth )) (reserva state)))
+(defun generate-descendants-bfs(state &optional (depth 0) )
+  (mapcar #'(lambda (sublist) sublist) (cdr state))
+)
+    ;;(mapcar #'(lambda (piece) (run-operator state piece 0 0 depth ) ) (reserva state)))
 
-(defun run-operator (table piece &optional (line 0) (col 0) (depth 0) )
+(defun run-operator (table piece &optional (line 0) (col 0) (depth 0) ) ;;Fix running
   (cond 
-   ((and (< col 3) (operador line col piece table) )
-    (append (list (list depth (operador line col piece table) (list piece line col)))
-            (run-operator table piece line (+ col 1) depth)))
-   ((< col 3) (run-operator table piece line (+ col 1) depth))
-   ((< line 3) (run-operator table piece (+ line 1) depth))
+   ((and (< col 4) (operador line col piece table) )
+    (append (list (list depth (list piece line col))) ;;removed table
+          (run-operator table piece line (+ col 1) depth)))
+   ((< col 4) (run-operator table piece line (+ col 1) depth))
+   ((and (< line 3)) (run-operator table piece (+ line 1) 0 depth))
    (t nil) ))
 
 
 ;;; Tirar o estado dos abertos e por nos fechados depois gerar os sucessores do estado atual e colocar nos abertos
 ;;; BFS
-(defun bfs (&optional (open '()) (closed '()) (max-depth 2) (initial-node nil))
+(defun bfs (&optional (open '()) (closed '()) (max-depth 2) (initial nil) (counter 0))
   (cond ((null open) nil)
-        ((null initial-node) (bfs (abertos-bfs open 0) '() max-depth open))
+        ((null initial) (bfs (abertos-bfs open 0) '() max-depth open))
          (t (let ((state (car open)))
            (cond 
-            ((or (verifica-propriedades (tabuleiro(cadr state)) ) (>= (car state) max-depth)) state)
-            (t (bfs (append (cdr open) (abertos-bfs (cadr state) (+ 1 (car state)) ))
-                    (list state closed) max-depth initial-node)))) )))
+            ((<= 1500 counter) closed)
+            (t (generate-descendants-bfs state 1) ;;(length(car(correr-jogadas (teste) state (+ 1 (car state)))))
+            ;;(bfs (append (cdr open) (correr-jogadas (teste) state (+ 1 (car state))))
+              ;;     (cons state closed) max-depth initial (+ 1 counter))
+               ))))))
 
-(defun abertos-bfs (state &optional (depth 0))
-  (apply #'append (generate-descendants-bfs state depth))
+(defun abertos-bfs (state &optional (depth 0) (parent nil))
+  (list state depth parent)
+  ;;(apply #'append (generate-descendants-bfs state depth))
+)
+
+;;
+(defun correr-jogadas (initial-table moves depth) ;;replace depth with length of moves
+ (list (abertos-bfs (operador (caddr (cadr moves)) (cadr (cadr moves)) (car(cadr moves)) initial-table) depth) moves)
 )
