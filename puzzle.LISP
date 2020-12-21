@@ -95,7 +95,7 @@
                           (substituir (1- line) col piece (cdr table))))
         (t (cons (car table) (substituir (1- line) col piece (cdr table))))))
 
-;;Recebe um tabuleiro  e verifica se existe 4 propriedades iguais nas peças.
+;;Funcao que recebe um tabuleiro  e verifica se existe 4 propriedades iguais nas peças.
 (defun verifica-propriedades (lista-pecas &optional (index 0))
   (cond 
    ((and (< index 3) (comparar-linha-coluna(linha index lista-pecas)) (comparar-linha-coluna(coluna index lista-pecas)))
@@ -105,7 +105,7 @@
     T)
    (nil)))
 
-;; Todas as pecas diferentes de 0 e qualquer combinação das 4 propriedadades iguais 
+;;Funcao que todas as pecas diferentes de 0 e qualquer combinação das 4 propriedadades iguais 
 (defun comparar-linha-coluna (linha)
   (cond (
          (and
