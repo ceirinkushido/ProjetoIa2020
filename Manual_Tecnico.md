@@ -42,11 +42,7 @@
             * Se for retorna uma lista com a profundidade do nó, o estado do nó atual
               , o numero de nós percorridos e numero de nós gerados.
 
-
-
 ## Descrição das opções tomadas
-
-
 
 ## Limitações técnicas e ideias para desenvolvimento futuro
 
