@@ -47,7 +47,7 @@
          (t (let ((state (car open)))
            (cond 
             ( (or (>= (nivel-no state) max-depth) (verifica-propriedades (tabuleiro (no-estado state))))
-              (list (nivel-no state) (no-estado state) " |FECHADOS:" (/ (length closed) 3) " |ABERTOS:" (/ (length open) 3))) ;; TRANSFERIR PARA ESCRITA EM FICHEIRO
+              (list (nivel-no state) (no-estado state) (/ (length closed) 3) (/ (-(length open)(nivel-no state)) 3)))
             (t
              (bfs (append (cdr open) (generate-descendants-bfs (no-estado state) (nivel-no state)) )
                   (append state closed)  max-depth 0 (+ 1 counter))))))))
