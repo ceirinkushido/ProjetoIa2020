@@ -29,9 +29,11 @@
 2. Lista de comandos
 
     ```md
-    Number -> Numero (0-7) problemas que o utilizador vai poder escolher para ser visto a resolução no ecran.
+    Number -> Numero (0-7) problemas que o utilizador vai poder escolher para ser
+    visto a resolução no ecran.
     
-    Algorithm -> Algoritmos(BFS,DFS,*A) que vão ser escolhidos pelo utilizador para que seja feito sobre o tabuleiro problemático que o utilizador escolheu. 
+    Algorithm -> Algoritmos(BFS,DFS,*A) que vão ser escolhidos pelo utilizador 
+    para que seja feito sobre o tabuleiro problemático que o utilizador escolheu.
     ```
 
 ## Input/Output
@@ -44,17 +46,17 @@
     • Number -> Numero do problema 
     • Algorithm -> Nome do algoritmo a correr
 
-    Exemplo: (load-problem 1 'bfs)
-1 = Number
+    Exemplo: (load-problem 1 'bfs) 1 = Number
     'bfs = Algorithm
     ```
-    
+
     * Por ficheiros
 
     ```md
     Recebe o puzzle a correr com os seguintes formatos:
     • Forma curta do puzzle
-    ((((b q a o) (p q b c) 0 (p q a o)) ((b r a o) (p r a o) (b r a c) 0) (0 (p r a c) (p r b c) 0) ((b r b o) (b q a c) (p r b o) (b q b c)))
+    ((((b q a o) (p q b c) 0 (p q a o)) ((b r a o) (p r a o) (b r a c) 0) (0 
+    (p r a c) (p r b c) 0) ((b r b o) (b q a c) (p r b o) (b q b c)))
     ((p q a c)
     (p q b o)
     (b r b c)
@@ -62,19 +64,24 @@
     ))
     
     • Forma original do puzzle
-    ((((branca quadrada alta oca) (preta quadrada baixa cheia) 0 (preta quadrada alta oca)) ((branca redonda alta oca) (preta redonda alta oca) (branca redonda alta cheia) 0) (0 (preta redonda alta cheia) (preta redonda baixa cheia) 0) ((branca redonda baixa oca) (branca quadrada alta cheia) (preta redonda baixa oca) (branca quadrada baixa cheia)))
+    ((((branca quadrada alta oca) (preta quadrada baixa cheia) 0 (preta quadrada
+    alta oca)) ((branca redonda alta oca) (preta redonda alta oca) (branca redonda
+     alta cheia) 0) (0 (preta redonda alta cheia) (preta redonda baixa cheia) 0)
+     ((branca redonda baixa oca) (branca quadrada alta cheia) (preta redonda 
+     baixa oca) (branca quadrada baixa cheia)))
     ((preta quadrada alta cheia)
     (preta quadrada baixa oca)
     (branca redonda baixa cheia)
     (branca quadrada baixa oca)
     ))
     ```
-    
+
 2. informação produzida
     * écran
 
     ```md
-    Após correr um dos algoritmos será mostrado ao utilizador a informação com o seguinte formato:
+    Após correr um dos algoritmos será mostrado ao utilizador a informação com 
+    o seguinte formato:
      Tempo de execução: <tempo_de_exec>
      Profundidade: <profundidade>
      Nos espandidos: <nos_espandidos>
@@ -111,7 +118,8 @@
     * ficheiros
 
     ```md
-    Após correr um dos algoritmos é corrido num ficheiro e a informação estará com o seguinte formato:
+    Após correr um dos algoritmos é corrido num ficheiro e a informação estará 
+    com o seguinte formato:
      Tempo de execução: <tempo_de_exec>
      Profundidade: <profundidade>
      Nos espandidos: <nos_espandidos>
@@ -161,11 +169,15 @@ etc.
 2. Abrir o ficheiro projeto.lisp a partir do opção open do lispworks.
 
 3. Selecionar a opção compile buffer 
- 3.1. O programa dá erro se os ficheiros não existirem ou se está na directoria incorrecta.
+ * O programa dá erro se os ficheiros não existirem ou se está na directoria incorrecta.
  
-4. Escrever no listener o (load-problem number 'algorithm') para correr o problema 	 selecionado com o algorithmo selecionado.
- 4.1. O programa dá erro se o utilizador não escolher um dos problemas disponiveis ou algoritmos.
- 4.2. Caso esteja a utilizar uma versão gratuita do lispworks pode acontecer o seguinte erro o "you are approaching the heap size limit for the Personal Edition of LispWorks.
+4. Escrever no listener o (load-problem number 'algorithm') para correr o problema
+selecionado com o algorithmo selecionado.
+ * O programa dá erro se o utilizador não escolher um dos problemas disponiveis 
+ ou algoritmos.
+ * Caso esteja a utilizar uma versão gratuita do lispworks pode acontecer o 
+ seguinte erro o "you are approaching the heap size limit for the Personal 
+ Edition of LispWorks.
 If you choose to continue now you are advised to save your work
 at regular intervals.".
 

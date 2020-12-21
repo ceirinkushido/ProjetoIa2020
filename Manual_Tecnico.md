@@ -42,6 +42,19 @@
             * Se for retorna uma lista com a profundidade do nó, o estado do nó atual
               , o numero de nós percorridos e numero de nós gerados.
 
+2. Modulo Procura - Algoritmo DFS
+   * Tem uma complexidade de (n*n)!
+   * O algoritmo testa se :
+     * A lista de abertos está vazia
+        * Se estiver retorna "END"
+     * Se o no-inicial está vazio
+        * Corre o algortimo do dfs novamente com os argumentos:
+            * (list(cria-no open 0 0)) '() max-depth 0 0
+   * Se a profundidade atual é igual ou superior á profundidade maxima definida
+        ou se no atual é um nó final/solução.
+            * Se for retorna uma lista com a profundidade do nó, o estado do nó atual
+              , o numero de nós percorridos e numero de nós gerados.
+
 ## Descrição das opções tomadas
 
 ## Limitações técnicas e ideias para desenvolvimento futuro
@@ -49,6 +62,7 @@
 1. Requisitos não implementados
     * Requisito Algoritmo A estrela e heuristica dada.
     * Implementação da nova heuristica.
+    * Algoritmos Extras.
 2. Limitações tecnicas.
     * O algoritmo BFS não corre os problemas 4, 5 e 6 devido ao limite de memoria
       da versão gratuita do Lispworks.
