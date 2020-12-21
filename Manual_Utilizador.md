@@ -4,7 +4,7 @@
 
 ### Realizado por: André Espinho e Fábio Pinhal
 
-#### Projeto X
+#### Projeto Nº 1: Época Normal
 
 <div style="page-break-after: always"></div>
 
@@ -21,11 +21,19 @@
 ## Introdução
 
 1. Para quem é , para que serve? Que problemas resolve?
+    * Este documente refere à implementação feita para resolução dop projeto
+     "jogo dos 4" atravéz da linguagem lisp e dos algoritmos dados
 2. Descrição dos requisitos do programa
+    * implemtação dos algoritmos BFS, DFS e A*
+    * separação do dominio do problema e do dominion dos algoritmos
+    * implementação de input/output atravéz de consola e ficheiros
 
 ## Instalação e utilização
 
 1. Instalação
+    * efetuar o download da pasta
+    * colocala no desktop
+    * correr atravéz do ide LispWorks
 2. Lista de comandos
 
     ```md
@@ -156,44 +164,84 @@
 
 1. Como efetuar a operação BFS  do problema 1
 
-```md
-1. Será necessário descrever os comandos que o programa pode receber para
-funcionar de formaadequada e conduzir à resolução do problema para que foi concebido
+    ```md
+    1. Abrir o lispworks.
 
-2. Deverá explicar-se a linha de sucesso, ou seja: o funcionamento típico, e
-algumas linhas de insucesso,ou seja: possíveis comportamentos de exceção, erros,
-etc.
+    2. Abrir o ficheiro projeto.lisp a partir do opção open do lispworks.
 
-1. Abrir o lispworks.
+    3. Selecionar a opção compile buffer 
+    * O programa dá erro se os ficheiros não existirem ou se está na directoria incorrecta.
+    
+    4. Escrever no listener o (load-problem 1 'bfs) para correr o problema
+    selecionado com o algorithmo selecionado.
+    * O programa dá erro se o utilizador não escolher um dos
+     problemas ou algoritmos disponiveis.
+    * Caso esteja a utilizar uma versão gratuita do lispworks pode acontecer o 
+    seguinte erro o "you are approaching the heap size limit for the Personal 
+    Edition of LispWorks.
+    If you choose to continue now you are advised to save your work
+    at regular intervals.".
 
-2. Abrir o ficheiro projeto.lisp a partir do opção open do lispworks.
+    5. Caso o programa tenha executado correctamente terá o seguinte resultado :
+    Tempo de exec: 31 ms
+    Profundidade: 2
+    Nos espandidos: 26
+    Nos gerados: 400
+    No Final
+    Tabuleiro:
+    ((B Q A O) (P R B O) (P Q A O) (B Q A C))
+    ((B R A O) (B R B O) (B R A C) (P R B C))
+    ((P Q B C) (P R A C) (B Q B O) 0)
+    ((P Q B O) 0 (B Q B C) 0)
+    Reserva:
+    (P R A O)
+    (P Q A C)
+    (B R B C)
+    ```
 
-3. Selecionar a opção compile buffer 
- * O programa dá erro se os ficheiros não existirem ou se está na directoria incorrecta.
- 
-4. Escrever no listener o (load-problem number 'algorithm') para correr o problema
-selecionado com o algorithmo selecionado.
- * O programa dá erro se o utilizador não escolher um dos problemas disponiveis 
- ou algoritmos.
- * Caso esteja a utilizar uma versão gratuita do lispworks pode acontecer o 
- seguinte erro o "you are approaching the heap size limit for the Personal 
- Edition of LispWorks.
-If you choose to continue now you are advised to save your work
-at regular intervals.".
+2. Como efetuar a operação DFS do problema 6
 
-5. Caso o programa tenha executado correctamente terá o seguinte resultado :
-Tempo de exec: 31 ms
-Profundidade: 2
-Nos espandidos: 26
-Nos gerados: 400
-No Final
- Tabuleiro:
- ((B Q A O) (P R B O) (P Q A O) (B Q A C))
- ((B R A O) (B R B O) (B R A C) (P R B C))
- ((P Q B C) (P R A C) (B Q B O) 0)
- ((P Q B O) 0 (B Q B C) 0)
- Reserva:
- (P R A O)
- (P Q A C)
- (B R B C)
-```
+    ```md
+    1. Abrir o lispworks.
+
+    2. Abrir o ficheiro projeto.lisp a partir do opção open do lispworks.
+
+    3. Selecionar a opção compile buffer 
+    * O programa dá erro se os ficheiros não existirem ou se está na directoria incorrecta.
+    
+    4. Escrever no listener o (load-problem 6 'dfs) para correr o problema
+    selecionado com o algorithmo selecionado.
+    * O programa dá erro se o utilizador não escolher um dos problemas
+     ou algoritmos disponiveis.
+    * Caso esteja a utilizar uma versão gratuita do lispworks pode acontecer o 
+    seguinte erro o "you are approaching the heap size limit for the Personal 
+    Edition of LispWorks.
+    If you choose to continue now you are advised to save your work
+    at regular intervals.".
+
+    5. Caso o programa tenha executado correctamente terá o seguinte resultado:
+    Tempo de exec: 47 ms
+    Profundidade: 3
+    Nos espandidos: 3
+    Nos gerados: 675
+    No Final
+    Tabuleiro:
+    ((B Q A C) (B Q A O) (B Q B O) 0)
+    (0 0 0 0)
+    (0 0 0 0)
+    (0 0 0 0)
+    Reserva:
+    (B Q B C)
+    (P Q A C)
+    (P Q A O)
+    (P Q B O)
+    (P Q B C)
+    (B R A C)
+    (B R A O)
+    (B R B C)
+    (B R B O)
+    (P R A C)
+    (P R A O)
+    (P R B C)
+    (P R B O)
+    ```

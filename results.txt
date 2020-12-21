@@ -1,4 +1,4 @@
-Tempo de exec: 63 ms
+Tempo de exec: 47 ms
 Profundidade: 3
 Nos espandidos: 3
 Nos gerados: 675

@@ -41,6 +41,8 @@
         ou se no atual é um nó final/solução.
             * Se for retorna uma lista com a profundidade do nó, o estado do nó atual
               , o numero de nós percorridos e numero de nós gerados.
+    * devido à forma como o bfs efetua espanções surgem numeros erros de memoria
+     nos problemas 4, 5 e 6
 
 2. Modulo Procura - Algoritmo DFS
    * Tem uma complexidade de (n*n)!
@@ -54,8 +56,6 @@
         ou se no atual é um nó final/solução.
             * Se for retorna uma lista com a profundidade do nó, o estado do nó atual
               , o numero de nós percorridos e numero de nós gerados.
-
-## Descrição das opções tomadas
 
 ## Limitações técnicas e ideias para desenvolvimento futuro
 
