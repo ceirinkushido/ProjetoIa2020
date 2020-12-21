@@ -1,0 +1,14 @@
+Tempo de exec: 31 ms
+Profundidade: 2
+Nos espandidos: 26
+Nos gerados: 400
+No Final
+ Tabuleiro:
+ ((B Q A O) (P R B O) (P Q A O) (B Q A C))
+ ((B R A O) (B R B O) (B R A C) (P R B C))
+ ((P Q B C) (P R A C) (B Q B O) 0)
+ ((P Q B O) 0 (B Q B C) 0)
+ Reserva:
+ (P R A O)
+ (P Q A C)
+ (B R B C)

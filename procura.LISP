@@ -47,7 +47,12 @@
          (t (let ((state (car open)))
            (cond 
             ( (or (>= (nivel-no state) max-depth) (verifica-propriedades (tabuleiro (no-estado state))))
-              (list (nivel-no state) (no-estado state) (/ (length closed) 3) (/ (-(length open)(nivel-no state)) 3)))
+              (list (nivel-no state) (no-estado state) (/ (length closed) 3 ) (length open)))
             (t
              (bfs (append (cdr open) (generate-descendants-bfs (no-estado state) (nivel-no state)) )
                   (append state closed)  max-depth 0 (+ 1 counter))))))))
+
+(defun dfs (&optional (open '()) (closed '()) (max-depth 3) (initial nil) (counter 0))
+  (cond ((equal start goal) 
+         (reverse (cons start been-list)))
+        (t (try-moves start goal been-list moves moves))))

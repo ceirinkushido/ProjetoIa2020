@@ -15,9 +15,21 @@
    ( (> number 1) (read file nil :eof) (skip-line file (- number 1)))
    (t(read file nil :eof))))
 
-(defun run-algorithm(table algorithm)
+(defun run-algorithm(table algorithm &optional (start-time (get-internal-run-time)))
   (cond
-   ((equal algorithm 'bfs) (bfs table))
+   ((equal algorithm 'bfs) (generate-output (append (bfs table) (list  (- (get-internal-run-time) start-time) ) ) ) )
    ((equal algorithm 'dfs) (dfs table))
    ((equal algorithm 'a*) "a*")
    (t "Not the right algorithm")))
+
+(defun generate-output(list)
+  (format t "Tempo de exec: ~A ms~%Profundidade: ~A~%Nos espandidos: ~A~%Nos gerados: ~A~%No Final~% Tabuleiro:~{~% ~a~}~% Reserva:~{~% ~a~}"
+          (car(cddddr list)) (car list) (caddr list) (cadddr list) (car(cadr list)) (cadr(cadr list)) ) 
+  
+  (with-open-file (str "~/desktop/ProjetoIa2020/results.txt"
+                       :direction :output
+                       :if-exists :supersede
+                       :if-does-not-exist :create)
+    (format str "Tempo de exec: ~A ms~%Profundidade: ~A~%Nos espandidos: ~A~%Nos gerados: ~A~%No Final~% Tabuleiro:~{~% ~a~}~% Reserva:~{~% ~a~}"
+            (car(cddddr list)) (car list) (caddr list) (cadddr list) (car(cadr list)) (cadr(cadr list))))
+)
