@@ -56,11 +56,11 @@
 ;;;DFS (Depth-First-Depth) algorithm
 (defun dfs (&optional (open '()) (closed '()) (max-depth 3) (initial nil) (counter 0))
   (cond ((null open) "END")
-        ((null initial) (bfs (list (cria-no open 0 0) ) '() max-depth 0  0))
+        ((null initial) (dfs (list (cria-no open 0 0) ) '() max-depth 0  0))
          (t (let ((state (car open)))
            (cond 
             ( (or (>= (nivel-no state) max-depth) (verifica-propriedades (tabuleiro (no-estado state))))
               (list (nivel-no state) (no-estado state) (/ (length closed) 3 ) (length open)))
             (t
-             (bfs (append (generate-descendants-bfs (no-estado state) (nivel-no state)) (cdr open)  )
+             (dfs (append (generate-descendants-bfs (no-estado state) (nivel-no state)) (cdr open)  )
                   (append state closed)  max-depth 0 (+ 1 counter))))))))

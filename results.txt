@@ -1,14 +1,24 @@
-Tempo de exec: 31 ms
-Profundidade: 2
-Nos espandidos: 26
-Nos gerados: 400
+Tempo de exec: 63 ms
+Profundidade: 3
+Nos espandidos: 3
+Nos gerados: 675
 No Final
  Tabuleiro:
- ((B Q A O) (P R B O) (P Q A O) (B Q A C))
- ((B R A O) (B R B O) (B R A C) (P R B C))
- ((P Q B C) (P R A C) (B Q B O) 0)
- ((P Q B O) 0 (B Q B C) 0)
+ ((B Q A C) (B Q A O) (B Q B O) 0)
+ (0 0 0 0)
+ (0 0 0 0)
+ (0 0 0 0)
  Reserva:
- (P R A O)
+ (B Q B C)
  (P Q A C)
+ (P Q A O)
+ (P Q B O)
+ (P Q B C)
+ (B R A C)
+ (B R A O)
  (B R B C)
+ (B R B O)
+ (P R A C)
+ (P R A O)
+ (P R B C)
+ (P R B O)
