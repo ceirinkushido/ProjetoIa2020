@@ -1,9 +1,11 @@
  ;;; This File Loads required files and handles user interaction
-(load "~/desktop/ProjetoIa2020/puzzle.lisp") ;;::if-does-not-exist nil)
-(load "~/desktop/ProjetoIa2020/procura.lisp") ;;::if-does-not-exist nil)
+(load "~/desktop/ProjetoIa2020/algoritmo.lisp") ;;::if-does-not-exist nil)
+(load "~/desktop/ProjetoIa2020/jogo.lisp") ;;::if-does-not-exist nil)
 
 
-
+(defun start-play
+  (print "Choose Gamemode:~%1: Human VS CPU~%2: CPU VS CPU")
+)
 
 
 ;;Funcao que carrega o ficheiro dos problemas e inicia o algorithm dado  

@@ -20,7 +20,7 @@
 (defun run-algorithm(table algorithm &optional (start-time (get-internal-run-time)))
   (cond
    ((equal algorithm 'bfs) (generate-output (append (bfs table) (list  (- (get-internal-run-time) start-time) ) ) ) )
-   ((equal algorithm 'dfs) (dfs table))
+   ((equal algorithm 'dfs) (generate-output (append (dfs table) (list  (- (get-internal-run-time) start-time) ) ) ) )
    ((equal algorithm 'a*) "a*")
    (t "Not the right algorithm")))
 
