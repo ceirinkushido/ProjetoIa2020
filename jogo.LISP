@@ -154,50 +154,17 @@
                (equal (cadddr (third linha)) (cadddr (fourth linha))) )) ) nil)
         (t)))
 
-
-;;;Funcao que efetua uma jogada (de jogador ou cpu)
-(defun jogar (estado tempo)
-  (cond
-   ( (nil tempo) (format t "Player move"))
-   ( (<= tempo 0)
-     ;; Verificar tempo restante apos algoritmo
-     (format t "Game Over.~% By: Time Out"))
-   (t (format t "Game continues ~A" estado))) )
-
-(defun gameplay-loop (game-mode current-player time-limit &optional (current-state (initial-board-short)) )
-  (cond
-   ( (= game-mode 1)
-     (cond
-      ( (AND (= current-player 1) (NOT (verifica-propriedades (tabuleiro current-state))) )
-        (gameplay-loop game-mode 2 time-limit (jogar current-state nil)))
-      ( (AND (= current-player 2) (NOT (verifica-propriedades (tabuleiro current-state))) )
-        (gameplay-loop game-mode 1 time-limit (jogar current-state time-limit)))
-      (t (format t "Game Over!~% Player ~A Wins." current-player))))
-   (t
-    (cond
-     ( (AND (= current-player 1) (NOT (verifica-propriedades (tabuleiro current-state))) )
-       (gameplay-loop game-mode 2 time-limit (jogar current-state time-limit)))
-     ( (AND (= current-player 2) (NOT (verifica-propriedades (tabuleiro current-state))) )
-       ;; Alterar Tempo Limite a cada Jogada?
-       (gameplay-loop game-mode 1 time-limit (jogar current-state time-limit)))
-     (t (format t "Game Over!~% Player ~A Wins." current-player)))
-    )))
-          
-
-;;(format t "Game Over.~% By: Board State"))(jogar estado tempo) )
-
-
-      
-      
-
-
 ;;; =================================================OPERADORES===========================================
 ;;Funcao vai receber uma linha coluna a peca e tabuleiro e operar usando uma lista de operadores no tabuleiro
 (defun operador (line col piece table)
   (cond
-   ( (casa-vaziap line col (tabuleiro table))
+   ( (AND (casa-vaziap line col (tabuleiro table)) (find-piece piece (reserva table)) )
      (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table)) ))
      (t nil)))
+
+;;Funcao adicional que trata de realizar a jogada do humano
+(defun human-move (move state)
+  (operador  (convert-to-internal-col (car move)) (- (cadr move) 1) (caddr move) state) )
 
 ;;Funcao que opera sobre o tabuleiro e tenta jogar a peca no tabuleiro 
 (defun run-operator (state piece &optional (line 0) (col 0) (depth 0) )
@@ -209,3 +176,21 @@
    ((< col 4) (run-operator state piece line (+ col 1) depth))
    ((and (< line 3)) (run-operator state piece (+ line 1) 0 depth))
    (t nil) ))
+
+;; ==========INTERNAL AUXILIARY FUNCTIONS==========
+(defun convert-to-internal-col (col)
+  (- (char-int (char (symbol-name col) 0) ) 65))
+
+
+;;validates the human move sintax
+(defun validate-sintax (move)
+   (cond
+    ( (AND (symbolp (car move)) (numberp (cadr move)) )
+      t)
+    (t (format t"result:~a" (caddr move) ) nil )) )
+
+(defun find-piece (piece reserved-pieces)
+  (cond
+   ((null reserved-pieces) NIL)
+   ((equal piece (car reserved-pieces)) T)
+   (T (find-piece piece (cdr reserved-pieces)))))
