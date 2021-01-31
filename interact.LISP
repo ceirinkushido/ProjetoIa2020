@@ -23,7 +23,8 @@
          ( (move (read-from-string (concatenate 'string "(" (read-line) ")"))) )
        (cond 
         ( (AND (validate-sintax move) (human-move move estado) )
-              (human-move move estado) )
+          (player-log (list move estado))
+          (human-move move estado) )
         (t (format t "Incorrect Syntax. Try again.~%") 
            (jogar estado tempo)) )))
    ( (<= tempo 0)
@@ -108,5 +109,5 @@
                        :direction :output
                        :if-exists :append
                        :if-does-not-exist :create)
-    (format str "Move: ~A~% Table:~{~% ~a~}~% Reserve:~{~% ~a~}"
+    (format str "Move: ~A~% Table:~{~% ~a~}~% Reserve:~{~% ~a~}~%"
             (car list) (tabuleiro (cadr list)) (reserva(cadr list)) )) )

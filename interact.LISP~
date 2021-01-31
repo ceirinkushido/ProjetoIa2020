@@ -21,7 +21,11 @@
    ( (not (numberp tempo))
      (let 
          ( (move (read-from-string (concatenate 'string "(" (read-line) ")"))) )
-       (human-move move estado) ))
+       (cond 
+        ( (AND (validate-sintax move) (human-move move estado) )
+              (human-move move estado) )
+        (t (format t "Incorrect Syntax. Try again.~%") 
+           (jogar estado tempo)) )))
    ( (<= tempo 0)
      ;; Verificar tempo restante apos algoritmo
      (format t "CPU Over.~% By: Time Out"))
