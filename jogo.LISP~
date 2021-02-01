@@ -158,22 +158,13 @@
 ;;Funcao vai receber uma linha coluna a peca e tabuleiro e operar usando uma lista de operadores no tabuleiro
 (defun operador (line col piece table)
   (cond
-   ( (casa-vaziap line col (tabuleiro table))
+   ( (AND (casa-vaziap line col (tabuleiro table)) (find-piece piece (reserva table)) )
      (list (substituir line col piece (tabuleiro table)) (remover-peca piece (reserva table)) ))
      (t nil)))
 
 ;;Funcao adicional que trata de realizar a jogada do humano
 (defun human-move (move state)
-  (cond 
-   ( (operador (convert-to-internal-col (car move)) (- (cadr move) 1) (caddr move) state)
-     (player-log (list move state))
-     (operador (convert-to-internal-col (car move)) (- (cadr move) 1) (caddr move) state) )
-   (t nil)))
-
-(defun valid-move (move)
-  
-)
-
+  (operador  (convert-to-internal-col (car move)) (- (cadr move) 1) (caddr move) state) )
 
 ;;Funcao que opera sobre o tabuleiro e tenta jogar a peca no tabuleiro 
 (defun run-operator (state piece &optional (line 0) (col 0) (depth 0) )
@@ -188,5 +179,18 @@
 
 ;; ==========INTERNAL AUXILIARY FUNCTIONS==========
 (defun convert-to-internal-col (col)
-  ;;(format t "col: ~a" col)
   (- (char-int (char (symbol-name col) 0) ) 65))
+
+
+;;validates the human move sintax
+(defun validate-sintax (move)
+   (cond
+    ( (AND (symbolp (car move)) (numberp (cadr move)) )
+      t)
+    (t (format t"result:~a" (caddr move) ) nil )) )
+
+(defun find-piece (piece reserved-pieces)
+  (cond
+   ((null reserved-pieces) NIL)
+   ((equal piece (car reserved-pieces)) T)
+   (T (find-piece piece (cdr reserved-pieces)))))
