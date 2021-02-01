@@ -1,53 +1,45 @@
-;;cria um novo no
-(defun cria-no (novo-no &optional (g 0) (pai nil))
-  (list novo-no g pai))
+(defvar b-beta -999999)
+(defvar b-alfa 999999)
 
-;;; =============================================Metodos seletores=========================================
-;; no-estado devolve o estado de um no
-(defun no-estado (no)
-  (car no))
+(defun min-ab (a b)
+    (cond
+     ((eql a 999999) b)
+     ((eql b 999999) a)
+     ((eql a -999999) -999999)
+     ((eql b -999999) -999999)
+     (t (min a b))))
 
-;;Funcao devolve o n√≠vel de um no
-(defun nivel-no (no)
-(defvar -inf 999999)
-(defvar +inf 999999)
-
-(defun min (a b)
+(defun max-ab (a b)
   (cond
-    ((eql a +inf) b)
-    ((eql b +inf) a)
-    ((eql a -inf) -inf)
-    ((eql b -inf) -inf)
-    (t (cl:min a b))))
-
-(defun max (a b)
-  (cond
-    ((eql a -inf) b)
-    ((eql b -inf) a)
-    ((eql a +inf) +inf)
-    ((eql b +inf) +inf)
-    (t (cl:max a b))))
-
+   ((eql a -999999) b)
+   ((eql b -999999) a)
+   ((eql a 999999) 999999)
+   ((eql b 999999) 999999)
+   (t (max a b))))
 
 ;;; ===============================================Algoritmos===============================================
 ;;; MinMax with Alfa-Beta Prunning algorithm
 (defun alphabeta (node depth a b maximizing-player-p)
   (when (or (= depth 0) (terminal-node-p node))
-    (return-from alphabeta (heuristic-value node)))
+    ;(return-from alphabeta node))
+    (return-from alphabeta (heuristic-value-child node)))
   (if maximizing-player-p
-      (let ((value -8))
+      (let ((value b))
         (dolist (child (children node))
-          (setf value (max value (alphabeta child (1- depth) a ﬂ nil)))
-          (setf a (max a value))
-          (when (<= ﬂ a)
-            ;; beta cut
+          (setf value (max-ab value (alphabeta child (1- depth) a b nil)))
+          (setf a (max-ab a value))
+          (when (<= b a)
+           ;; beta cut
+           ;(format t "~%beta cutting:~a" node)
             (return)))
         value)
-    (let ((value +8))
+    (let ((value a))
       (dolist (child (children node))
-        (setf value (min value (alphabeta child (1- depth) a ﬂ t)))
-        (setf a (min a value))
-        (when (<= ﬂ a)
+        ;(print depth)
+        (setf value (min-ab value (alphabeta child (1- depth) a b t)))
+        (setf a (min-ab a value))
+        (when (<= b a)
           ;; alfa cut
+          ;(format t "~%alfa cutting:~a" child)
           (return)))
       value)))

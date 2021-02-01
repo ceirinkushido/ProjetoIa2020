@@ -23,9 +23,11 @@
          ( (move (read-from-string (concatenate 'string "(" (read-line) ")"))) )
        (cond 
         ( (AND (validate-sintax move) (human-move move estado) )
-          (player-log (list move estado))
-          (human-move move estado) )
-        (t (format t "Incorrect Syntax. Try again.~%") 
+          (player-log (list move (no-estado estado)))
+          (human-move move estado))
+        (t (format t "Invalid move Try again.~%") 
+           (print move)
+           (print estado)
            (jogar estado tempo)) )))
    ( (<= tempo 0)
      ;; Verificar tempo restante apos algoritmo
@@ -33,7 +35,7 @@
    (t (format t "CPU continues ~A" estado))) )
 
 ;;Funcao que controla o fluxo de jogo
-(defun gameplay-loop (game-mode current-player time-limit &optional (current-state (initial-board-short)) )
+(defun gameplay-loop (game-mode current-player time-limit &optional (current-state (cria-no (initial-board-short))) )
   (cond
    ( (= game-mode 1)
      (format t "Game State:~{~% ~a~}~%Reserve:~{~% ~a~}~%"
@@ -41,26 +43,32 @@
      (cond
       ( (AND (= current-player 1) (NOT (verifica-propriedades (tabuleiro current-state))) )
         (format t "Insert Player Move Format: Column[a to d] Line[1 to 4] (Piece)>~% Insert Move:")
-        (gameplay-loop game-mode 1 time-limit (jogar current-state nil)))
+        (gameplay-loop game-mode 1 time-limit (cria-no (jogar current-state nil))))
+
       ( (AND (= current-player 2) (NOT (verifica-propriedades (tabuleiro current-state))) )
         (gameplay-loop game-mode 1 time-limit (jogar current-state time-limit)))
-      ( (= (length (reserva current-state)) 0)
+
+      ( (= (length (cadr current-state)) 0)
         (format t "Game Over!~% Draw.~% Final Game State:~{~% ~a~}~% Reserve:~{~% ~a~}~%"
                 (tabuleiro current-state) (reserva current-state)))
+
       (t (format t "Game Over!~% Player ~A Wins.~% Final Game State:~{~% ~a~}~% Reserve:~{~% ~a~}~%"
                  current-player (tabuleiro current-state) (reserva current-state) ))))
    (t
     (cond
      ( (AND (= current-player 1) (NOT (verifica-propriedades (tabuleiro current-state))) )
        (gameplay-loop game-mode 2 time-limit (jogar current-state time-limit)))
+
      ( (AND (= current-player 2) (NOT (verifica-propriedades (tabuleiro current-state))) )
        ;; Alterar Tempo Limite a cada Jogada?
        (gameplay-loop game-mode 1 time-limit (jogar current-state time-limit)))
+
      ( (= (length (reserva current-state)) 0)
        (format t "Game Over!~% Draw.~% Final Game State:~{~% ~a~}~% Reserve:~{~% ~a~}~%"
                (tabuleiro current-state) (reserva current-state)))
+
      (t (format t "Game Over!~% Player ~A Wins.~% Final Game State:~{~% ~a~}~% Reserve:~{~% ~a~}~%"
-                current-player (tabuleiro current-state) (reserva current-state)))) )))
+                current-player (car current-state) (reserva current-state)))) )))
 
 
 ;; ==========AUXILIARY FUNCTIONS [GAME SETUP]==========
@@ -110,4 +118,4 @@
                        :if-exists :append
                        :if-does-not-exist :create)
     (format str "Move: ~A~% Table:~{~% ~a~}~% Reserve:~{~% ~a~}~%"
-            (car list) (tabuleiro (cadr list)) (reserva(cadr list)) )) )
+            (car list) (car (cadr list)) (cadr(cadr list)) )) )

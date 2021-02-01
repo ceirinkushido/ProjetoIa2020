@@ -3,10 +3,10 @@
   "Funcao que representa um tabuleiro de teste com as iniciais de cada palavra"
   '(
     (
-     (0 0 0 0) (0 0 0 0)(0 0 0 0) (0 0 0 0)
+     ((b r a o) 0 0 0) (0 0 0 0)(0 0 0 0) (0 0 0 0)
      )
     (
-     (b r a o)
+     
      (p r a o)
      (b r b o)
      (b r a c)
@@ -23,6 +23,20 @@
      (p q a c)
      (b q b c)
      (p q b c)
+     )))
+
+(defun test-board ()
+  '((
+     ((branca quadrada alta oca) (preta redonda baixa oca) (preta quadrada alta oca) (branca quadrada alta cheia))
+     ((branca redonda alta oca) 0 (branca redonda alta cheia) 0)
+     ((preta quadrada baixa cheia) (preta redonda alta cheia) (branca quadrada baixa oca) 0)
+     ((preta quadrada baixa oca) 0 (branca quadrada baixa cheia) 0)
+     )
+    ((branca redonda baixa oca)
+     (preta redonda baixa cheia)
+     (preta redonda alta oca)
+     (preta quadrada alta cheia)
+     (branca redonda baixa cheia)
      )))
 
 (defun initial-board ()
@@ -50,18 +64,15 @@
      (preta quadrada baixa cheia)
      )))
 
-;; =========="Poor quality" Code AKA Globals==========
-(setq node-list (make-hash-table))
-
 ;; ==========BROARD POSITION FUNCTIONS==========
 
 (defun tabuleiro (table)
   "Funcao que recebe uma lista que contem um tabuleiro com reservas de pecas e devolve o tabuleiro"
-  (car table))
+  (car(cadr table)))
 
 (defun reserva (table)
   "Funcao que recebe uma lista que contem um tabuleiro com reservas de pecas e devolve a reserva de pecas."
-  (cadr table))
+  (cadr(cadr table)))
 
 (defun linha (index table)
   "Funcao que recebe um indice e o tabuleiro e retorna uma lista que representa essa linha do tabuleiro."
@@ -165,7 +176,7 @@
 
 (defun human-move (move state)
   "Funcao adicional que trata de realizar a jogada do humano"
-  (operador  (convert-to-internal-col (car move)) (- (cadr move) 1) (caddr move) state) )
+  (operador (convert-to-internal-col (car move)) (- (cadr move) 1) (caddr move) state) )
 
 (defun run-operator (state piece &optional (line 0) (col 0) (depth 0) )
   "Funcao que opera sobre o tabuleiro e tenta jogar a peca no em todas as posicoes do tabuleiro "
@@ -197,38 +208,120 @@
    ((equal piece (car reserved-pieces)) T)
    (T (find-piece piece (cdr reserved-pieces)))))
 
+
+(defun find-value (list)
+  "Verifies weather the piece exists in the reserve"
+  (cond
+   (
+    (AND
+     (not(equal 0 (car list)))
+     (not(equal 0 (cadr list)))
+     (not(equal 0 (caddr list)))
+     (not(equal 0 (cadddr list))))
+    0
+  )
+   (t (apply '+
+      (list (list-value list 'branca)
+                       (list-value list 'preta)
+                       (list-value list 'quadrada)
+                       (list-value list 'redonda)
+                       (list-value list 'baixa)
+                       (list-value list 'alta)
+                       (list-value list 'oca)
+                       (list-value list 'cheia))
+       )
+      )))
+
+(defun list-value (list cond)
+  (cond 
+   ( (null list) 0)
+   ( (not(atom (car list))) (list-value (append (car list) (cdr list)) cond) )
+   ( (eql cond (car list)) (+ 1 (list-value (cdr list) cond)) )
+   (t (list-value (cdr list) cond)) ))
+
 ;; ==========Problem Domain Specific Alfa Beta Functions==========
-(declaim (ftype function terminal-node-p heuristic-value children))
+;(declaim (ftype function terminal-node-p heuristic-value children))
 ;; node = <depth> <current-board> <parent-board>
 
 (defun terminal-node-p (node)
   "Verifies weather the node is a leaf node"
   (cond
-   ( (verifica-propriedades (cadr node)) t)
-   (t nil)))
+   ( (verifica-propriedades (no-estado node)) nil)
+   (t)))
 
 (defun heuristic-value (node)
   "Returns the heuristic value for the node"
-  (+ (car node) (+ (line-val (linha (cadr node))) (+col-val (coluna (cadr node)) (+diagonals-val (cadr node)) ))))
+  (cond
+   ( (<= (nivel-no node) 0)
+     (apply '+ (list
+                (find-value (linha 0 (tabuleiro (no-estado node))))
+                (find-value (linha 1 (tabuleiro (no-estado node))))
+                (find-value (linha 2 (tabuleiro (no-estado node))))
+                (find-value (linha 3 (tabuleiro (no-estado node))))
+                )))
+   (t (heuristic-value-child node))))
+
+(defun heuristic-value-child (node)
+  "Returns the heuristic value for the node"
+  (apply '+ (list
+             (find-value (linha 0 (car (no-estado node))))
+             (find-value (linha 1 (car (no-estado node))))
+             (find-value (linha 2 (car (no-estado node))))
+             (find-value (linha 3 (car (no-estado node))))
+         )))
+  ;(+ (car node) (+ (line-val (linha (cadr node))) (+col-val (coluna (cadr node)) (+diagonals-val (cadr node)) ))))
 
 (defun children (node)
   "returns all possible children of the current node"
-  ;;(mapcar #'lamda))
-  (setf (gethash 'AAA node-list) '(Node 1))
-  (setf (gethash '02 node-list) '(Node 2)) 
-  (setf (gethash '003 node-list) '(Node 3)) 
+  ;; =========="Poor quality" Code AKA Special vars==========
+  (setq node-list (make-hash-table))
+  (gen-children node (reserva node))
 
-  (remhash 'AAA node-list)
-  (maphash #'(lambda (k v) (format t "~a => ~a~%" k v)) node-list)
+  ;(setf (gethash '02 node-list) '(Node 2)) 
+  ;(setf (gethash '003 node-list) '(Node 3)) 
+  (hash-table-vals node-list)
 )
 
-(defun line-val (line)
+(defun gen-children (node pieces)
   (cond
-   ( (nil line) nil)
-   (t nil)))
+   ( (<= (length pieces) 0) nil )
+   
+   (t
+    ;(print pieces)
+    (gen-piece-locations node (car pieces) )
+    (gen-children node (cdr pieces))
+    )))
 
+(defun hash-table-vals (hash-table)
+    (let ((vals ()))
+      (maphash (lambda (k v) (push v vals)) hash-table)
+      vals))
 
-;;; =============================================Metodos seletores=========================================
+(defun hash-table-finder (list target depth)
+  (cond
+   ( (>= depth 0) (hash-table-finder (children list) target (-depth 1) ))
+   (t 
+    (mapcar #'(lambda (sublist)
+                (cond
+                 ( (= target (heuristic-value-child sublist))
+                   (print "found"));;(push sublist move))
+                 (t (list target (heuristic-value-child sublist) )))
+                )
+            children))))
+(defun gen-piece-locations (node piece &optional (line 0) (col 0) )
+  "Funcao que gera a lista de filhos de um nivel"
+  
+  (cond 
+   ( (and (< col 4) (operador line col piece node))
+    (setf (gethash  (operador line col piece node)  node-list)
+          (cria-no (operador line col piece node) (+ (nivel-no node) 1)  (no-estado node) ))
+    ;(setf (gethash count node-list) (list line col)
+    (gen-piece-locations node piece line (+ col 1)) )
+   ( (< col 4) (gen-piece-locations node piece line (+ col 1) ) )
+   ( (and (< line 3)) (gen-piece-locations node piece (+ line 1) 0 ) )
+   (t nil) ))
+
+;;; =============================================Metodos Seletores=========================================
 (defun cria-no (novo-no &optional (depth 0) (pai nil))
   "cria um novo no"
   (list depth novo-no pai))
@@ -242,7 +335,7 @@
   (caddr no))
 
 (defun nivel-no (no)
-  "Funcao devolve o nível de um no"
+  "Funcao devolve o nï¿½vel de um no"
   (car no))
 
 (defun no-existep (no lista algoritmo)
